@@ -130,7 +130,6 @@ void increment(Date &date)
                 date.day = date.day - 28;
                 }
             }
-            
             break;
 
             case 12 :
