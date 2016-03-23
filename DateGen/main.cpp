@@ -45,15 +45,11 @@ int main()
 //  inputDate function to get date from user and store it in Date struct
 void inputDate(Date &date)
 {
-    cout<<" Enter Your Date as following order :"<<endl;
-    cout<< " Enter the Year(Years start from 1754) : ";
-    cin>>date.year;
+    
+    cout<<" Enter Your Date (Years start from 1754) and follow this format YYYY MM DD:"<<endl;
+    cin>>date.year>>date.month>>date.day;
     checkYear(date);
-    cout<<" Enter the Month : " ;
-    cin>>date.month;
     checkMonth(date);
-    cout<< " Enter the Day : ";
-    cin>>date.day;
     checkDay(date);
     cout<< " Your Given Date is : "<<date.day<<" "<<date.month<<" "<<date.year<<endl;
 }// end function inputDate
@@ -172,7 +168,7 @@ void outputDate(Date &date,WeekDay &weekday)
     {
         setWeekDay(date, weekday);
         cout<<setfill('0');
-        cout<<setw(2)<<date.day<<"."<<setw(2)<<date.month<<"."<<setw(4)<<date.year<<setw(4)<<"      "<<weekday.weekValue<<endl;
+        cout<<setw(2)<<date.day<<"."<<setw(2)<<date.month<<"."<<setw(4)<<date.year<<setw(4)<<"      "<<"[ "<<weekday.weekValue<<" ]"<<endl;
         increment(date);
     }
 } // end of outputDate function
@@ -217,36 +213,36 @@ void setMonthValue(Date date, WeekDay &weekday){
             weekday.monthValue=5;
             break;
         default:
-            cout<<"Program should not come to this point at seting monthValue";
+            cout<<"Program should not come to this point at setting monthValue";
             break;
     }
 }
 void setDayValue(Date date, WeekDay &weekday){
     switch (weekday.dayValue) {
         case 1:
-            weekday.weekValue = "Sunday";
+            weekday.weekValue = "Sun";
             break;
         case 2:
-            weekday.weekValue = "Monday";
+            weekday.weekValue = "Mon";
             break;
         case 3:
-            weekday.weekValue = "Tuesday";
+            weekday.weekValue = "Tue";
             break;
         case 4:
-            weekday.weekValue = "Wednesday";
+            weekday.weekValue = "Wed";
             break;
         case 5:
-            weekday.weekValue = "Thursday";
+            weekday.weekValue = "Thu";
             break;
         case 6:
-            weekday.weekValue = "Friday";
+            weekday.weekValue = "Fri";
             break;
         case 7: case 0:
-            weekday.weekValue = "Saturday";
+            weekday.weekValue = "Sat";
             break;
             
         default:
-            cout<<"Program should not come to this point at seting dayValue";
+            cout<<"Program should not come to this point at setting dayValue";
             break;
     }
 }
@@ -255,7 +251,6 @@ string setWeekDay(Date date,WeekDay &weekday){
     int result2;
     int result3;
     int result4;
-    
     setMonthValue( date, weekday);
     setCenturyValue(date, weekday);
     result1 = date.day+weekday.monthValue;
@@ -292,7 +287,6 @@ string setWeekDay(Date date,WeekDay &weekday){
             }
             result4=res5;
         }
-    
     weekday.dayValue = result4;
     setDayValue(date,weekday);
     return weekday.weekValue;
