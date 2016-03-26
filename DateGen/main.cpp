@@ -31,14 +31,18 @@ void setMonthValue(Date,WeekDay &);
 void setDayValue(Date,WeekDay &);
 string setWeekDay(Date,WeekDay &);
 
+void setEvents(Date,WeekDay);
+
 // main function
 int main()
 {
     Date time;          // intialiaze our struct
     inputDate(time);
     WeekDay week;// Ask use to input a date
-    outputDate(time,week);   // print 7 date after the user date input
-    
+    for (int i = 0; i < 7; i++)
+    {
+        outputDate(time,week);   // print 7 date after the user date input
+    }
 
 
 }// end of main function
@@ -46,7 +50,7 @@ int main()
 void inputDate(Date &date)
 {
     
-    cout<<" Enter Your Date (Years start from 1754) and follow this format YYYY MM DD:"<<endl;
+    cout<<" Enter Your Date (Year starts from 1754) and Follow this format YYYY MM DD :"<<endl;
     cin>>date.year>>date.month>>date.day;
     checkYear(date);
     checkMonth(date);
@@ -114,6 +118,9 @@ void increment(Date &date)
     date.day= date.day + 1;
     switch (date.month) {
             case 1: case 3: case 5: case 7: case 8: case 10:
+            if (date.day ==31)
+                date.last=-1;
+            
             
             if (date.day > 31)
             {
@@ -123,21 +130,32 @@ void increment(Date &date)
             break;
             
             case 4: case 6: case 9: case 11:
+            if (date.day ==30)
+                date.last=-1;
+
             
             if (date.day > 30)
             {
                 date.month++;
                 date.day= date.day- 30;
+                date.last=-1;
+
             }
             break;
 
             case 2:
             if ((date.year % 4 ==0 and date.year%100 !=0) or date.year%400==0  ){
+                if (date.day ==29)
+                    date.last=-1;
+
                 if (date.day > 29){
                         date.month++;
                         date.day = date.day - 29;
                     }
             }else {
+                if (date.day ==28)
+                    date.last=-1;
+
                 if (date.day > 28){
                 date.month++;
                 date.day = date.day - 28;
@@ -146,7 +164,9 @@ void increment(Date &date)
             break;
 
             case 12 :
-            
+            if (date.day ==31)
+                date.last=-1;
+
              if (date.day > 31)
             {
                 date.month = date.month - 11;;
@@ -164,13 +184,13 @@ void increment(Date &date)
 // outputDate function which use increment function and print 7 days date
 void outputDate(Date &date,WeekDay &weekday)
 {
-    for (int i = 0; i < 7; i++)
-    {
         setWeekDay(date, weekday);
         cout<<setfill('0');
-        cout<<setw(2)<<date.day<<"."<<setw(2)<<date.month<<"."<<setw(4)<<date.year<<setw(4)<<"      "<<"[ "<<weekday.weekValue<<" ]"<<endl;
+        cout<<setw(2)<<date.day<<"."<<setw(2)<<date.month<<"."<<setw(4)<<date.year<<setw(4)<<"      "<<"[ "<<weekday.weekValue<<" ]"<<date.last<<endl;
+        date.last=0;
         increment(date);
-    }
+    
+    
 } // end of outputDate function
 
 int setCenturyValue(Date date,WeekDay &weekday){
@@ -179,9 +199,11 @@ int setCenturyValue(Date date,WeekDay &weekday){
     int diff2 = 0;
     for (int i=1; 4*i<= x; ++i)
         diff = x - 4*i;
-    for (int j=1; 7*j<=diff*5; ++j) {
+    if (diff>7){
+    for (int j=1; 7*j<=diff*5; ++j)
         diff2= (diff*5)-7*j;
     }
+    else diff2=diff*5;
     weekday.centuryValue = diff2;
     return weekday.centuryValue;
 }
@@ -263,13 +285,14 @@ string setWeekDay(Date date,WeekDay &weekday){
     }
         int res2 = 0;
         int res3 = date.year%100;
+        int res4 = res3 / 4;
         if (res3>28) {
             for (int j =1; 28*j<= res3; ++j) {
                 res2 = res3 - 28*j;
             }
             res3 = res2;
         }
-        int res4 = res3 / 4;
+    
         result2 = res4+res3;
     
         if ((date.month==1 or date.month==2) and ((date.year % 4 ==0 and date.year%100 !=0) or date.year%400==0)) {
