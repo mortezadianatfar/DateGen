@@ -8,50 +8,47 @@ struct  Date {
     int day;                // variable to collect day
     int month;              // variable to collect month
     int year;               // variable to collect year
+    int weekday;            // variable to store weekday value
+    string event;           // string to hold events
 };
-// define struct WeekDay to set information need to make WeekDay
-struct WeekDay {
-    int monthValue;
-    int dayValue;
-    int centuryValue;
-    string weekValue;
+Date  MyHappenings[]
+{
+    { -1, 0, 0, 0, "Payday" },
+    { 1, 3, 0, 0, "Birthday Party" },
+    { 0, 0, 0, 5, "Darts evening" },
+    {13, 0, 0, 5, "Friday the 13th" },
 };
 
-void inputDate(Date &);       // prototype of inputDate function
+void inputDate(Date &);     // prototype of inputDate function
 void checkYear(Date &);     // prototype of checkYear function
 void checkMonth(Date &);    // prototype of checkMonth function
 void checkDay(Date &);      // prototype of checkDay function
 void increment(Date &);     // prototype of increment function
-void outputDate(Date &,WeekDay &);    // prototype of outputDate function
-
-// define struct WeekDay to Find and set Weekdays
-
-int setCenturyValue(Date , WeekDay &);
-void setMonthValue(Date,WeekDay &);
-void setDayValue(Date,WeekDay &);
-string setWeekDay(Date,WeekDay &);
-
-void setEvents(Date,WeekDay);
+void setWeekDay(Date &);    // prototype of setWeekDay function
+void setEvent(Date &);      // prototype of setEvent function
+void outputDate(Date &);    // prototype of outputDate function
 
 // main function
 int main()
 {
     Date time;          // intialiaze our struct
     inputDate(time);
-    WeekDay week;// Ask use to input a date
     for (int i = 0; i < 7; i++)
     {
-        outputDate(time,week);   // print 7 date after the user date input
+        setWeekDay(time);
+        setEvent(time);
+        outputDate(time);   // print 7 date after the user date input
+        increment(time);
     }
-
-
+    
+    
 }// end of main function
 //  inputDate function to get date from user and store it in Date struct
 void inputDate(Date &date)
 {
     
-    cout<<" Enter Your Date (Year starts from 1754) and Follow this format YYYY MM DD :"<<endl;
-    cin>>date.year>>date.month>>date.day;
+    cout<<" Enter Your Date (Year starts from 1754) and Follow this format by space DD MM YYYY :"<<endl;
+    cin>>date.day>>date.month>>date.year;
     checkYear(date);
     checkMonth(date);
     checkDay(date);
@@ -79,7 +76,7 @@ void checkMonth(Date &date)
 //checkDay Function to check day value to be correct and ask user for correct value if it is uncorrect
 void checkDay(Date &date)
 {
-switch (date.month) {
+    switch (date.month) {
         case 1: case 3: case 5: case 7: case 8: case 10: case 12 :
             while (date.day>31 or date.day<1) {
                 cout<< " You pick wrong Day!(It should be in 1- 31 range) Please Enter new Day Value : ";
@@ -93,11 +90,11 @@ switch (date.month) {
             }
             break;
         case 2 :
-        if ((date.year % 4 ==0 and date.year%100 !=0) or date.year%400==0  ){
-                    if (date.day>29 or date.day<1) {
-                        cout<< " You pick wrong Day!(It should be in 1- 29 range) Please Enter new Day Value : ";
-                        cin>>date.day;
-                    }
+            if ((date.year % 4 ==0 and date.year%100 !=0) or date.year%400==0  ){
+                if (date.day>29 or date.day<1) {
+                    cout<< " You pick wrong Day!(It should be in 1- 29 range) Please Enter new Day Value : ";
+                    cin>>date.day;
+                }
             }else{
                 while (date.day>28 or date.day<1) {
                     cout<< " You pick wrong Day!(It should be in 1- 28 range) Please Enter new Day Value : ";
@@ -105,9 +102,9 @@ switch (date.month) {
                 }
             }
             break;
-
+            
         default:
-        cout<<" The program should not get into this code"<<endl;
+            cout<<" The program should not get into this code"<<endl;
             break;
     }
 }// End checkDay function
@@ -117,11 +114,7 @@ void increment(Date &date)
 {
     date.day= date.day + 1;
     switch (date.month) {
-            case 1: case 3: case 5: case 7: case 8: case 10:
-            if (date.day ==31)
-                date.last=-1;
-            
-            
+        case 1: case 3: case 5: case 7: case 8: case 10:
             if (date.day > 31)
             {
                 date.month++;
@@ -129,45 +122,30 @@ void increment(Date &date)
             }
             break;
             
-            case 4: case 6: case 9: case 11:
-            if (date.day ==30)
-                date.last=-1;
-
-            
+        case 4: case 6: case 9: case 11:
             if (date.day > 30)
             {
                 date.month++;
                 date.day= date.day- 30;
-                date.last=-1;
-
             }
             break;
-
-            case 2:
+            
+        case 2:
             if ((date.year % 4 ==0 and date.year%100 !=0) or date.year%400==0  ){
-                if (date.day ==29)
-                    date.last=-1;
-
                 if (date.day > 29){
-                        date.month++;
-                        date.day = date.day - 29;
-                    }
+                    date.month++;
+                    date.day = date.day - 29;
+                }
             }else {
-                if (date.day ==28)
-                    date.last=-1;
-
                 if (date.day > 28){
-                date.month++;
-                date.day = date.day - 28;
+                    date.month++;
+                    date.day = date.day - 28;
                 }
             }
             break;
-
-            case 12 :
-            if (date.day ==31)
-                date.last=-1;
-
-             if (date.day > 31)
+            
+        case 12 :
+            if (date.day > 31)
             {
                 date.month = date.month - 11;;
                 date.year++;
@@ -175,142 +153,87 @@ void increment(Date &date)
             }
             break;
             
-            default:
+        default:
             cout<<"Program should not get into this error in increment Function!!!"<<endl;
             break;
-        }
+    }
 } // end increment Function
 
-// outputDate function which use increment function and print 7 days date
-void outputDate(Date &date,WeekDay &weekday)
+//setWeekDay function to calculate weekday
+void setWeekDay(Date &date){
+    // find the algorithm here "https://en.wikipedia.org/wiki/Determination_of_the_day_of_the_week"
+    int a = (14-date.month)/12;
+    int y = date.year-a;
+    int m = date.month+12*a-2;
+    date.weekday = (date.day + y + y/4 - y/100 + y/400 +(31 * m/12)) % 7;
+}// end setWeekDay function
+
+//setEvent function to set events related to their related days
+void setEvent(Date &date){
+    if(date.day>27){
+    switch (date.month) {
+        case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+            if (date.day ==31){
+                if(date.weekday == 5){
+                   date.event =  MyHappenings[0].event+","+MyHappenings[2].event;
+                break;
+                }
+                date.event =  MyHappenings[0].event;
+            }else
+                date.event = "-";
+                break;
+            
+        case 4: case 6: case 9: case 11:
+            if (date.day ==30){
+               if(date.weekday == 5){
+                   date.event =  MyHappenings[0].event+","+MyHappenings[2].event;
+                    break;
+               }
+               date.event =  MyHappenings[0].event;
+            }else
+                date.event = "-";
+                break;
+        case 2 :
+            if ((date.year % 4 == 0 and date.year % 100 !=0) or date.year % 400==0  ){
+                if(date.day == 29){
+                    if(date.weekday == 5){
+                        date.event =  MyHappenings[0].event+","+MyHappenings[2].event;
+                        break;
+                    }
+                    date.event =  MyHappenings[0].event;
+                }else
+                    date.event = "-";
+            }
+            else if(date.day == 28){
+                    if(date.weekday == 5){
+                        date.event =  MyHappenings[0].event+","+MyHappenings[2].event;
+                        break;
+                    }
+                date.event =  MyHappenings[0].event;
+            }
+            break;
+        }
+    }
+    else if (date.day == 1 and date.month == 3 and date.weekday != 5 )
+            date.event = MyHappenings[1].event;
+    else if (date.day == 1 and date.month == 3 and date.weekday == 5)
+            date.event = MyHappenings[1].event + ", "+ MyHappenings[2].event;
+    else if(date.weekday == 5 and date.day != 13)
+            date.event = MyHappenings[2].event;
+    else if (date.day == 13 and date.weekday == 5)
+            date.event = MyHappenings[3].event + ", "+ MyHappenings[2].event;
+    else
+        date.event = "-";
+    
+}
+
+// outputDate function which use increment function to increment a date and also set event related to input date
+void outputDate(Date &date)
 {
-        setWeekDay(date, weekday);
-        cout<<setfill('0');
-        cout<<setw(2)<<date.day<<"."<<setw(2)<<date.month<<"."<<setw(4)<<date.year<<setw(4)<<"      "<<"[ "<<weekday.weekValue<<" ]"<<date.last<<endl;
-        date.last=0;
-        increment(date);
-    
-    
+    string Day[7] = { "Sun","Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    cout<<setfill('0');
+    cout<<setw(2)<<date.day<<"."<<setw(2)<<date.month<<"."<<setw(4)<<date.year<<"      "<<"[ "<<Day[date.weekday]<<" ]"<<"     "<<date.event<<endl;
 } // end of outputDate function
 
-int setCenturyValue(Date date,WeekDay &weekday){
-    int x = date.year /100;
-    int diff = 0;
-    int diff2 = 0;
-    for (int i=1; 4*i<= x; ++i)
-        diff = x - 4*i;
-    if (diff>7){
-    for (int j=1; 7*j<=diff*5; ++j)
-        diff2= (diff*5)-7*j;
-    }
-    else diff2=diff*5;
-    weekday.centuryValue = diff2;
-    return weekday.centuryValue;
-}
-void setMonthValue(Date date, WeekDay &weekday){
-    switch (date.month) {
-        case 1: case 10:
-            weekday.monthValue=0;
-            break;
-        case 2: case 3: case 11:
-            weekday.monthValue = 3;
-            break;
-        case 4: case 7:
-            weekday.monthValue=6;
-            break;
-            
-        case 5:
-            weekday.monthValue=1;
-            break;
-            
-        case 6:
-            weekday.monthValue=4;
-            break;
-            
-        case 8:
-            weekday.monthValue=2;
-            break;
-            
-        case 9: case 12:
-            weekday.monthValue=5;
-            break;
-        default:
-            cout<<"Program should not come to this point at setting monthValue";
-            break;
-    }
-}
-void setDayValue(Date date, WeekDay &weekday){
-    switch (weekday.dayValue) {
-        case 1:
-            weekday.weekValue = "Sun";
-            break;
-        case 2:
-            weekday.weekValue = "Mon";
-            break;
-        case 3:
-            weekday.weekValue = "Tue";
-            break;
-        case 4:
-            weekday.weekValue = "Wed";
-            break;
-        case 5:
-            weekday.weekValue = "Thu";
-            break;
-        case 6:
-            weekday.weekValue = "Fri";
-            break;
-        case 7: case 0:
-            weekday.weekValue = "Sat";
-            break;
-            
-        default:
-            cout<<"Program should not come to this point at setting dayValue";
-            break;
-    }
-}
-string setWeekDay(Date date,WeekDay &weekday){
-    int result1;
-    int result2;
-    int result3;
-    int result4;
-    setMonthValue( date, weekday);
-    setCenturyValue(date, weekday);
-    result1 = date.day+weekday.monthValue;
-    if (result1 > 6) {
-        int res1 = 0;
-        for (int i =1; 7*i<= result1; ++i) {
-            res1 = result1 - 7*i;
-        }
-        result1 = res1;
-    }
-        int res2 = 0;
-        int res3 = date.year%100;
-        int res4 = res3 / 4;
-        if (res3>28) {
-            for (int j =1; 28*j<= res3; ++j) {
-                res2 = res3 - 28*j;
-            }
-            res3 = res2;
-        }
-    
-        result2 = res4+res3;
-    
-        if ((date.month==1 or date.month==2) and ((date.year % 4 ==0 and date.year%100 !=0) or date.year%400==0)) {
-            result3 = result2 - 1;
-        }
-        else
-            result3= result2 + weekday.centuryValue;
-    
-        result4 = result3+result1;
-    
-        if (result4 > 6) {
-            int res5 = 0;
-            for (int k =1; 7*k<= result4; ++k) {
-                res5 = result4 - 7*k;
-            }
-            result4=res5;
-        }
-    weekday.dayValue = result4;
-    setDayValue(date,weekday);
-    return weekday.weekValue;
-}
+
+
