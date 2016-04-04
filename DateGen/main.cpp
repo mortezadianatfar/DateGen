@@ -10,35 +10,50 @@ struct  Date {
     int year;               // variable to collect year
     int weekday;            // variable to store weekday value
     string event;           // string to hold events
+    int last;
+    
 };
-Date  MyHappenings[]
-{
-    { -1, 0, 0, 0, "Payday" },
-    { 1, 3, 0, 0, "Birthday Party" },
-    { 0, 0, 0, 5, "Darts evening" },
-    {13, 0, 0, 5, "Friday the 13th" },
+struct Event{
+    int day;
+    int month;
+    int year;
+    int weekday;
+    string event;
 };
+
 
 void inputDate(Date &);     // prototype of inputDate function
 void checkYear(Date &);     // prototype of checkYear function
 void checkMonth(Date &);    // prototype of checkMonth function
 void checkDay(Date &);      // prototype of checkDay function
+void checkLast(Date &);     // prototype of checkLast function
 void increment(Date &);     // prototype of increment function
 void setWeekDay(Date &);    // prototype of setWeekDay function
-void setEvent(Date &);      // prototype of setEvent function
+void setEvent(Date &,Event[]);      // prototype of setEvent function
 void outputDate(Date &);    // prototype of outputDate function
 
 // main function
 int main()
 {
-    Date time;          // intialiaze our struct
-    inputDate(time);    // ask date data from user
+    Date time;                          // intialiaze our struct
+    inputDate(time);                    // Ask from user to input a date
+    Event  MyHappenings[] =
+    {
+        { -1, 0, 0, 0, "Payday" },
+        { 1, 3, 0, 0, "Birthday Party" },
+        { 0, 0, 0, 5, "Darts evening" },
+        {13, 0, 0, 5, "Friday the 13th" },
+      //  {2,3,0,0,"Hooooraaa another event"}, // You can add other events too here," no limits "
+    };                                      // Initialize the events,
+    
+    
     for (int i = 0; i < 7; i++)
     {
-        setWeekDay(time);   // assign weekday for input date
-        setEvent(time);     // check event for input date
-        outputDate(time);   // print out the date with its data
-        increment(time);    // increment the date ine step
+        setWeekDay(time);               // Calculate the weekday of a date
+        checkLast(time);                // check that if a date is the last date of the month or not
+        setEvent(time,MyHappenings);    // compare the date and events, and set events related to that date
+        outputDate(time);               // print date with weekdays and events
+        increment(time);                // increment a date by one day
     }
     
     
@@ -110,6 +125,35 @@ void checkDay(Date &date)
     }
 }// End checkDay function
 
+// checkLast funtion to find if a date is last day of the month or not
+void checkLast(Date &date)
+{
+    date.last = 0;
+    switch (date.month) {
+        case 1: case 3: case 5: case 7: case 8: case 10: case 12 :
+            if (date.day ==31)
+                date.last=-1;
+            break;
+        case 4: case 6: case 9: case 11:
+            if (date.day ==30)
+                date.last=-1;
+            break;
+        case 2 :
+            if ((date.year % 4 ==0 and date.year%100 !=0) or date.year%400==0  ){
+                if (date.day ==29)
+                    date.last=-1;
+            }else{
+                if (date.day ==28)
+                    date.last=-1;
+            }
+            break;
+            
+        default:
+            cout<<" The program should not get into this code"<<endl;
+            break;
+    }
+}// End checkLast function
+
 // increment Function to calculate increment days respect to the user input
 void increment(Date &date)
 {
@@ -169,64 +213,24 @@ void setWeekDay(Date &date){
     date.weekday = (date.day + y + y/4 - y/100 + y/400 +(31 * m/12)) % 7;
 }// end setWeekDay function
 
-//setEvent function to set events related to their related days
-void setEvent(Date &date){
-    if(date.day>27){
-    switch (date.month) {
-        case 1: case 3: case 5: case 7: case 8: case 10: case 12:
-            if (date.day ==31){
-                if(date.weekday == 5){
-                   date.event =  MyHappenings[0].event+","+MyHappenings[2].event;
-                break;
-                }
-                date.event =  MyHappenings[0].event;
-            }else
-                date.event = "-";
-                break;
-            
-        case 4: case 6: case 9: case 11:
-            if (date.day ==30){
-               if(date.weekday == 5){
-                   date.event =  MyHappenings[0].event+","+MyHappenings[2].event;
-                    break;
-               }
-               date.event =  MyHappenings[0].event;
-            }else
-                date.event = "-";
-                break;
-        case 2 :
-            if ((date.year % 4 == 0 and date.year % 100 !=0) or date.year % 400==0  ){
-                if(date.day == 29){
-                    if(date.weekday == 5){
-                        date.event =  MyHappenings[0].event+","+MyHappenings[2].event;
-                        break;
-                    }
-                    date.event =  MyHappenings[0].event;
-                }else
-                    date.event = "-";
+//setEvent function to set events related to their related events
+void setEvent(Date &date,Event event[]){
+    date.event = "-";
+    string a;
+    for(int i=0 ; i<sizeof(event); i++){
+        if((date.day==event[i].day or event[i].day == 0 or event[i].day == date.last) and (date.month==event[i].month or event[i].month == 0) and (date.year==event[i].year or event[i].year == 0) and (date.weekday==event[i].weekday or event[i].weekday == 0)){
+            if(a.empty()){
+                date.event = event[i].event;
+                a = date.event;
+                continue;
+            }else{
+                date.event = event[i].event+","+ a;
+                a = date.event;
+                continue;
             }
-            else if(date.day == 28){
-                    if(date.weekday == 5){
-                        date.event =  MyHappenings[0].event+","+MyHappenings[2].event;
-                        break;
-                    }
-                date.event =  MyHappenings[0].event;
-            }
-            break;
         }
     }
-    else if (date.day == 1 and date.month == 3 and date.weekday != 5 )
-            date.event = MyHappenings[1].event;
-    else if (date.day == 1 and date.month == 3 and date.weekday == 5)
-            date.event = MyHappenings[1].event + ", "+ MyHappenings[2].event;
-    else if(date.weekday == 5 and date.day != 13)
-            date.event = MyHappenings[2].event;
-    else if (date.day == 13 and date.weekday == 5)
-            date.event = MyHappenings[3].event + ", "+ MyHappenings[2].event;
-    else
-        date.event = "-";
-    
-}
+} // end of setEvent function
 
 // outputDate function which use increment function to increment a date and also set event related to input date
 void outputDate(Date &date)
