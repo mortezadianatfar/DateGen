@@ -32,17 +32,18 @@ void outputDate(Date &);    // prototype of outputDate function
 int main()
 {
     Date time;          // intialiaze our struct
-    inputDate(time);
+    inputDate(time);    // ask date data from user
     for (int i = 0; i < 7; i++)
     {
-        setWeekDay(time);
-        setEvent(time);
-        outputDate(time);   // print 7 date after the user date input
-        increment(time);
+        setWeekDay(time);   // assign weekday for input date
+        setEvent(time);     // check event for input date
+        outputDate(time);   // print out the date with its data
+        increment(time);    // increment the date ine step
     }
     
     
 }// end of main function
+
 //  inputDate function to get date from user and store it in Date struct
 void inputDate(Date &date)
 {
@@ -58,8 +59,8 @@ void inputDate(Date &date)
 // checkYear Function to check year value to be correct and ask user for correct value if it is uncorrect
 void checkYear(Date &date)
 {
-    while (date.year<1754) {
-        cout<< " You pick wrong Year!(It should be greater than 1754)Please Enter new Year Value : ";
+    while (date.year<1754 or date.year>9999) {
+        cout<< " You pick wrong Year!(It should be between 1754 and 9999)Please Enter new Year Value : ";
         cin>>date.year;
     }
 }// End checkYear function
